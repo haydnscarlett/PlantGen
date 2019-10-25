@@ -68,7 +68,7 @@ Window::Window(int width, int height, const char* name)
 		throw WND_LAST_EXCEPT();
 	}
 	ShowWindow(hWnd, SW_SHOWDEFAULT);
-	pGfx = std::make_unique<Graphics>(hWnd);
+	pGfx = std::make_unique<Graphics>(hWnd, width, height);
 }
 
 Window::~Window()
@@ -96,8 +96,12 @@ LRESULT WINAPI Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 	return pWnd->HandleMsg(hWnd, msg, wParam, lParam);
 }
 
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
+	if(ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+		return true;
+
 	switch (msg)
 	{
 	case WM_CLOSE:

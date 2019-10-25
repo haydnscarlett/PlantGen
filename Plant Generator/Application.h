@@ -8,6 +8,7 @@ public:
 	Application();
 	int Go();
 private:
+	void Update();
 	void DoFrame();
 private:
 	Window wnd;

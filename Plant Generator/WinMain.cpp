@@ -8,6 +8,11 @@ int CALLBACK WinMain(
 	LPSTR lpCmdLine,
 	int nCmdShow)
 {
+	HRESULT hr = CoInitialize(NULL);
+	if (FAILED(hr))
+	{
+		return -1;
+	}
 	try
 	{
 		return Application{}.Go();	

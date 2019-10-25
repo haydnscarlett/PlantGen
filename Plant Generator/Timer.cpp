@@ -4,18 +4,50 @@ using namespace std::chrono;
 
 Timer::Timer()
 {
-	last = steady_clock::now();
+	start = std::chrono::high_resolution_clock::now();
+	stop = std::chrono::high_resolution_clock::now();
 }
 
-float Timer::Mark()
+double Timer::GetMillisecondsElapsed()
 {
-	const auto old = last;
-	last = steady_clock::now();
-	const duration<float> frameTime = last - old;
-	return frameTime.count();
-}
+	if (isRunning)
+	{
+		auto elapsed = std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() - start);
+		return elapsed.count();
+	}
+	else
+	{
+		auto elapsed = std::chrono::duration<double, std::milli>(stop - start);
+		return elapsed.count();
+	}
 
-float Timer::Peek()
+}
+void Timer::Restart()
 {
-	return duration<float>(steady_clock::now() - last).count();
+	isRunning = true;
+	start = std::chrono::high_resolution_clock::now();
+}
+bool Timer::Stop()
+{
+	if (!isRunning)
+		return false;
+	else
+	{
+		stop = std::chrono::high_resolution_clock::now();
+		isRunning = false;
+		return true;
+	}
+}
+bool Timer::Start()
+{
+	if (isRunning)
+	{
+		return false;
+	}
+	else
+	{
+		start = std::chrono::high_resolution_clock::now();
+		isRunning = true;
+		return true;
+	}
 }
